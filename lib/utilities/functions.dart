@@ -13,7 +13,7 @@ abstract class Functions {
     var letters = <String, double>{};
     for (var i = 0; i < pass.length; i++) {
       letters[pass[i]] = (letters[pass[i]] ?? 0) + 1;
-      score += 10 / letters[pass[i]]!;
+      score += 9 / letters[pass[i]]!;
     }
 
     // bonus points for mixing it up
@@ -25,7 +25,7 @@ abstract class Functions {
     };
 
     var variationCount = 0;
-    variations.forEach((_, value) => variationCount += (value == true) ? 10 : 0);
+    variations.forEach((_, value) => variationCount += (value == true) ? 9 : 0);
     score += (variationCount - 1) * 10;
 
     return (score * .01).clamp(0.0, 1.0);

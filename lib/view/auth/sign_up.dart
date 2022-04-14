@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:testnet/view/auth/log_in.dart';
+import 'package:testnet/view/auth/sign_up_password.dart';
 
 class SignUpScreen extends StatefulWidget {
+  static const route = '/sign_up';
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override
@@ -42,7 +45,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       toolbarOptions:
                           const ToolbarOptions(selectAll: true, paste: true),
-                      validator: (val) {
+                      validator: (_val) {
+                        var val = (_val ?? '').trim();
+                        if (val.isEmpty) {
+                          return 'Please what is your first name?';
+                        }
+                        firstName = val;
                         return null;
                       },
                     ),
@@ -56,7 +64,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       toolbarOptions:
                           const ToolbarOptions(selectAll: true, paste: true),
-                      validator: (val) {
+                      validator: (_val) {
+                        var val = (_val ?? '').trim();
+                        if (val.isEmpty) {
+                          return 'Please what is your last name?';
+                        }
+                        lastName = val;
                         return null;
                       },
                     ),
@@ -70,7 +83,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       toolbarOptions:
                           const ToolbarOptions(selectAll: true, paste: true),
-                      validator: (val) {
+                      validator: (_val) {
+                        var val = (_val ?? '').trim();
+                        if (val.isEmpty) {
+                          return 'Please what is your email address?';
+                        }
+                        email = val;
                         return null;
                       },
                     ),
@@ -84,7 +102,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       toolbarOptions:
                           const ToolbarOptions(selectAll: true, paste: true),
-                      validator: (val) {
+                      validator: (_val) {
+                        var val = (_val ?? '').trim();
+                        if (val.isNotEmpty && val.length < 11) {
+                          return 'Invalid phone number';
+                        }
+                        number = val;
                         return null;
                       },
                     ),
@@ -100,7 +123,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: ElevatedButton(
                         child: const Text('Continue'),
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {}
+                          if (formKey.currentState!.validate()) {
+                            Navigator.of(context).pushNamed(
+                                SignUpPasswordScreen.route,
+                                arguments: email);
+                          }
                         },
                       ),
                     ),
@@ -124,9 +151,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         Expanded(
                             child: Center(
-                                child: Text('Sign up with Google',
-                                    style:
-                                        TextStyle(color: Color(0xff787878))))),
+                          child: Text('Sign up with Google',
+                              style: TextStyle(color: Color(0xff787878))),
+                        )),
                       ],
                     ),
                   ),
@@ -142,7 +169,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(width: 2),
                     TextButton(
                       child: const Text('Login'),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .popAndPushNamed(LogInScreen.route);
+                      },
                     ),
                   ],
                 ),

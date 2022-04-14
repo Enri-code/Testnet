@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:testnet/providers/auth.dart';
+import 'package:testnet/providers/user.dart';
+import 'package:testnet/view/auth/sign_up.dart';
+import 'package:testnet/view/menu/menu.dart';
 
 class LogInScreen extends StatefulWidget {
+  static const route = '/login';
   const LogInScreen({Key? key}) : super(key: key);
 
   @override
@@ -35,6 +41,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextFormField(
+                      initialValue: 'janet.weaver@reqres.in',
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       decoration: const InputDecoration(
@@ -44,6 +51,10 @@ class _LogInScreenState extends State<LogInScreen> {
                       toolbarOptions:
                           const ToolbarOptions(selectAll: true, paste: true),
                       validator: (val) {
+                        if (val?.isEmpty ?? true) {
+                          return 'Please what is your email address?';
+                        }
+                        email = val!;
                         return null;
                       },
                     ),
@@ -62,7 +73,12 @@ class _LogInScreenState extends State<LogInScreen> {
                           onPressed: () => setState(() => hideText = !hideText),
                         ),
                       ),
-                      validator: (val) {
+                      validator: (_val) {
+                        var val = _val ?? '';
+                        if (val.isEmpty) {
+                          return 'Please input your password';
+                        }
+                        password = val;
                         return null;
                       },
                     ),
@@ -76,9 +92,32 @@ class _LogInScreenState extends State<LogInScreen> {
                     child: SizedBox(
                       height: 58,
                       child: ElevatedButton(
-                        child: const Text('Login'),
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {}
+                        child:
+                            Provider.of<AuthProvider>(context).loggedInState ==
+                                    AuthState.Authenticating
+                                ? const Center(
+                                    child: SizedBox.square(
+                                    dimension: 24,
+                                    child: CircularProgressIndicator(
+                                        color: Colors.white),
+                                  ))
+                                : const Text('Login'),
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            try {
+                              var user = await Provider.of<AuthProvider>(
+                                      context,
+                                      listen: false)
+                                  .login(email, password);
+
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .user = user;
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  MenuScreen.route, (_) => false);
+                            } catch (e) {
+                              print('error caught by login button'); //TODO
+                            }
+                          }
                         },
                       ),
                     ),
@@ -102,9 +141,9 @@ class _LogInScreenState extends State<LogInScreen> {
                         ),
                         Expanded(
                             child: Center(
-                                child: Text('Continue with Google',
-                                    style:
-                                        TextStyle(color: Color(0xff787878))))),
+                          child: Text('Continue with Google',
+                              style: TextStyle(color: Color(0xff787878))),
+                        )),
                       ],
                     ),
                   ),
@@ -120,7 +159,9 @@ class _LogInScreenState extends State<LogInScreen> {
                     const SizedBox(width: 2),
                     TextButton(
                       child: const Text('Sign Up'),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(SignUpScreen.route);
+                      },
                     ),
                   ],
                 ),
