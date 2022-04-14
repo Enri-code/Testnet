@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:testnet/models/job.dart';
 
 class EditJobScreen extends StatefulWidget {
+  static const route = '/edit_job_screen';
   const EditJobScreen({Key? key}) : super(key: key);
 
   @override
@@ -8,10 +10,19 @@ class EditJobScreen extends StatefulWidget {
 }
 
 class _EditJobScreenState extends State<EditJobScreen> {
-  final formKey = GlobalKey<FormState>();
   static const _titleStyle =
           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       _subtitleStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w300);
+
+
+  final formKey = GlobalKey<FormState>();
+  late Job data;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    data = ModalRoute.of(context)!.settings.arguments as Job;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,88 +55,91 @@ class _EditJobScreenState extends State<EditJobScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
-                    Text('Role Details', style: _titleStyle),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 20),
+                    const Text('Role Details', style: _titleStyle),
+                    const SizedBox(height: 16),
                     Form(
                       key: formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           _TextField(
-                            hint: 'Marketing Specialist',
+                            hint: data.name,
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           _TextField(
-                            hint: 'Remote',
+                            hint: data.location,
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 26),
-                          Text('Job Details', style: _titleStyle),
-                          SizedBox(height: 16),
-                          Text('Pay', style: _subtitleStyle),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 26),
+                          const Text('Job Details', style: _titleStyle),
+                          const SizedBox(height: 16),
+                          const Text('Pay', style: _subtitleStyle),
+                          const SizedBox(height: 2),
                           _TextField(
-                            hint: r'$11 - $23 per hour',
+                            hint: data.rate,
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 16),
-                          Text('Job type', style: _subtitleStyle),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 16),
+                          const Text('Job type', style: _subtitleStyle),
+                          const SizedBox(height: 2),
                           _TextField(
-                            hint: r'Full-time, Part-time, Contract',
+                            hint: data.jobType,
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 16),
-                          Text('Number of openings for this position',
+                          const SizedBox(height: 16),
+                          const Text('Number of openings for this position',
                               style: _subtitleStyle),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 2),
                           _TextField(
                             hint: r'2',
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 16),
-                          Text('Schedule', style: _subtitleStyle),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 16),
+                          const Text('Schedule', style: _subtitleStyle),
+                          const SizedBox(height: 2),
                           _TextField(
                             hint: r'8 hour shift',
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 24),
-                          _ExtrasSection(
+                          const SizedBox(height: 24),
+                          const _ExtrasSection(
                             title: Text('Benefits', style: _titleStyle),
                             tag: Text('+ Tuition Reimbursement'),
                           ),
-                          SizedBox(height: 24),
-                          _ExtrasSection(
+                          const SizedBox(height: 24),
+                          const _ExtrasSection(
                             title: Text('Supplemental pay', style: _titleStyle),
                             tag: Text('+ Signing Bonus'),
                           ),
-                          SizedBox(height: 24),
-                          Text('Job Settings', style: _titleStyle),
-                          SizedBox(height: 16),
-                          Text('Country and language', style: _subtitleStyle),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 24),
+                          const Text('Job Settings', style: _titleStyle),
+                          const SizedBox(height: 16),
+                          const Text('Country and language',
+                              style: _subtitleStyle),
+                          const SizedBox(height: 2),
                           _TextField(
                             hint: r'United States, English',
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 16),
-                          Text('Promotion location', style: _subtitleStyle),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 16),
+                          const Text('Promotion location',
+                              style: _subtitleStyle),
+                          const SizedBox(height: 2),
                           _TextField(
                             hint: r'Remote',
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 16),
-                          Text('Expect to hire within', style: _subtitleStyle),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 16),
+                          const Text('Expect to hire within',
+                              style: _subtitleStyle),
+                          const SizedBox(height: 2),
                           _TextField(
                             hint: r'1 to 3 days',
                             onChanged: (_) {},
                           ),
-                          SizedBox(height: 220),
+                          const SizedBox(height: 220),
                         ],
                       ),
                     ),
@@ -148,7 +162,7 @@ class _EditJobScreenState extends State<EditJobScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     children: [
                       Expanded(
@@ -166,7 +180,7 @@ class _EditJobScreenState extends State<EditJobScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                 ],
               ),
             ],
@@ -188,7 +202,7 @@ class _ExtrasSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 16, 4),
       decoration: BoxDecoration(
-        color: Color(0xffECDFFF),
+        color: const Color(0xffECDFFF),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
@@ -196,11 +210,15 @@ class _ExtrasSection extends StatelessWidget {
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
-            children: [Icon(Icons.visibility_off), SizedBox(width: 8), title],
+            children: [
+              const Icon(Icons.visibility_off),
+              const SizedBox(width: 8),
+              title
+            ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(),
@@ -208,10 +226,10 @@ class _ExtrasSection extends StatelessWidget {
             ),
             child: tag,
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: TextButton(onPressed: () {}, child: Text('+ Add')),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextButton(onPressed: () {}, child: const Text('+ Add')),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testnet/models/job.dart';
+import 'package:testnet/view/edit_job.dart';
 
 class ActiveJobCard extends StatelessWidget {
   const ActiveJobCard(this.data, {Key? key}) : super(key: key);
@@ -35,30 +36,39 @@ class ActiveJobCard extends StatelessWidget {
                                   fontSize: 18, color: Color(0xff222222)),
                             ),
                             Text(data.rate,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 16, color: Colors.grey)),
                           ],
                         ),
-                        Text(data.tags,
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey)),
+                        Text(
+                          [
+                            if (data.jobLocation.isNotEmpty) data.jobLocation,
+                            if (data.location.isNotEmpty) data.location,
+                            if (data.jobType.isNotEmpty) data.jobType,
+                          ].join(' | '),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
                       ],
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               data.description,
-              style: TextStyle(fontSize: 14, height: 1.15),
+              style: const TextStyle(fontSize: 14, height: 1.15),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
                   child: const Text('Edit Job Details'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamed(EditJobScreen.route, arguments: data);
+                  },
                 ),
                 Text(
                   'Created ${data.creationDate}',

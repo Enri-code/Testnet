@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:testnet/providers/auth.dart';
+import 'package:testnet/providers/user.dart';
 import 'package:testnet/utilities/functions.dart';
+import 'package:testnet/view/auth/log_in.dart';
+import 'package:testnet/view/menu/menu.dart';
 
 class SignUpPasswordScreen extends StatefulWidget {
+  static const route = '/sign_up_password';
   const SignUpPasswordScreen({Key? key}) : super(key: key);
 
   @override
@@ -11,11 +17,17 @@ class SignUpPasswordScreen extends StatefulWidget {
 class _SignUpPasswordScreenState extends State<SignUpPasswordScreen> {
   final formKey = GlobalKey<FormState>();
 
+  var email = '';
   var password = '';
-  var confirmPassword = '';
   var hidePasswordText = true;
   var hideConfirmPasswordText = true;
   var passwordStrength = 0.0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    email = ModalRoute.of(context)!.settings.arguments as String;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +71,14 @@ class _SignUpPasswordScreenState extends State<SignUpPasswordScreen> {
                               Functions.calculatePasswordStrength(val);
                         });
                       },
-                      validator: (val) {
+                      validator: (_val) {
+                        password = _val ?? '';
+                        if (password.isEmpty) {
+                          return 'Your account needs a password';
+                        }
+                        if (passwordStrength < 0.5) {
+                          return 'Please use a stronger password';
+                        }
                         return null;
                       },
                     ),
@@ -70,14 +89,16 @@ class _SignUpPasswordScreenState extends State<SignUpPasswordScreen> {
                           child: SliderTheme(
                             data: SliderTheme.of(context).copyWith(
                               thumbColor: Colors.transparent,
-                              disabledActiveTrackColor: Colors.green,
+                              disabledActiveTrackColor: passwordStrength > 0.5
+                                  ? Colors.green
+                                  : Colors.orange,
                               thumbShape: SliderComponentShape.noThumb,
                             ),
                             child: Slider(
                                 value: passwordStrength, onChanged: null),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           flex: 2,
                           child: Text(
                             'Password strength',
@@ -105,7 +126,15 @@ class _SignUpPasswordScreenState extends State<SignUpPasswordScreen> {
                                   !hideConfirmPasswordText),
                         ),
                       ),
-                      validator: (val) {
+                      validator: (_val) {
+                        var val = _val ?? '';
+                        if (val.isEmpty) {
+                          return 'You need to confirm the password';
+                        }
+
+                        if (val != password) {
+                          return 'The passwords do not match';
+                        }
                         return null;
                       },
                     ),
@@ -119,9 +148,32 @@ class _SignUpPasswordScreenState extends State<SignUpPasswordScreen> {
                     child: SizedBox(
                       height: 58,
                       child: ElevatedButton(
-                        child: const Text('Sign up'),
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {}
+                        child: Provider.of<AuthProvider>(context)
+                                    .registeredState ==
+                                AuthState.Authenticating
+                            ? const Center(
+                                child: SizedBox.square(
+                                dimension: 24,
+                                child: CircularProgressIndicator(
+                                    color: Colors.white),
+                              ))
+                            : const Text('Sign up'),
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            try {
+                              var user = await Provider.of<AuthProvider>(
+                                      context,
+                                      listen: false)
+                                  .register(email, password);
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .user = user;
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  MenuScreen.route, (_) => false);
+                            } catch (e) {
+                              print(e);
+                              print('error caught by signup button'); //TODO
+                            }
+                          }
                         },
                       ),
                     ),
@@ -163,7 +215,9 @@ class _SignUpPasswordScreenState extends State<SignUpPasswordScreen> {
                     const SizedBox(width: 2),
                     TextButton(
                       child: const Text('Login'),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(LogInScreen.route);
+                      },
                     ),
                   ],
                 ),

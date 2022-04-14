@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:testnet/providers/user.dart';
 import 'package:testnet/theme/colors.dart';
 import 'package:testnet/view/menu/applicants.dart';
+import 'package:testnet/view/edit_job.dart';
 import 'package:testnet/view/menu/home.dart';
 
 class MenuScreen extends StatefulWidget {
+  static const route = '/menu';
   const MenuScreen({Key? key}) : super(key: key);
 
   @override
@@ -45,6 +49,8 @@ class _MenuScreenState extends State<MenuScreen> {
           children: [
             HomePage(controller: controller),
             ApplicantsPage(controller: controller),
+            const Scaffold(body: Center(child: Text('Under construction'))),
+            const Scaffold(body: Center(child: Text('Under construction'))),
           ],
         ),
       ),
